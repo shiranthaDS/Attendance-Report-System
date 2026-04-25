@@ -4,3 +4,4 @@ uploads/*.log
 
 # Composer vendor (Railway installs it during build)
 vendor/
+*.md
