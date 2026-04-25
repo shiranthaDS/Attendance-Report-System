@@ -1,0 +1,6 @@
+# Uploaded log files (never commit real data)
+uploads/*.txt
+uploads/*.log
+
+# Composer vendor (Railway installs it during build)
+vendor/

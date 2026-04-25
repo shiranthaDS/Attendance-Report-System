@@ -1,0 +1,240 @@
+/* ============================================================
+   PDF Export Styles – print.css  (Dompdf compatible)
+   Key fixes:
+     - page-break-inside: avoid on tbody rows
+     - thead repeats on every page (display: table-header-group)
+     - compact padding so more rows fit per page
+     - fixed footer with page numbers via Dompdf canvas script
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page {
+  size: A4 landscape;
+  margin: 12mm 10mm 18mm 10mm; /* bottom reserved for footer */
+}
+
+body {
+  font-family: 'DejaVu Sans', Arial, sans-serif;
+  font-size: 8.5pt;
+  color: #1a1a2e;
+  background: #fff;
+  line-height: 1.4;
+}
+
+/* ── PDF Header (first page only) ──────────────────────── */
+.pdf-header {
+  width: 100%;
+  border-bottom: 3px solid #6c63ff;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  overflow: hidden; /* clearfix */
+}
+.pdf-header-left {
+  float: left;
+}
+.pdf-header-left h1 {
+  font-size: 15pt;
+  font-weight: 700;
+  color: #6c63ff;
+  letter-spacing: .3px;
+  margin: 0;
+}
+.pdf-header-left p {
+  font-size: 7.5pt;
+  color: #666;
+  margin-top: 2px;
+}
+.pdf-header-right {
+  float: right;
+  text-align: right;
+  font-size: 7.5pt;
+  color: #555;
+}
+.pdf-header-right strong { color: #1a1a2e; }
+
+/* ── Summary Stats (header area) ────────────────────────── */
+.pdf-stats {
+  width: 100%;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.pdf-stat {
+  float: left;
+  width: 23%;
+  margin-right: 2.6%;
+  border: 1px solid #d0ccff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  text-align: center;
+  background: #f8f7ff;
+}
+.pdf-stat:last-child { margin-right: 0; }
+.pdf-stat-value {
+  font-size: 13pt;
+  font-weight: 800;
+  color: #6c63ff;
+  line-height: 1.1;
+}
+.pdf-stat-label {
+  font-size: 6.5pt;
+  color: #777;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+/* ── Filter Info Bar ────────────────────────────────────── */
+.pdf-filter-bar {
+  background: #f4f3ff;
+  border: 1px solid #d0ccff;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  font-size: 7.5pt;
+  color: #444;
+  overflow: hidden;
+}
+.pdf-filter-bar span {
+  float: left;
+  margin-right: 24px;
+}
+.pdf-filter-bar strong { color: #6c63ff; }
+
+/* ── Main Table ─────────────────────────────────────────── */
+.pdf-table-wrap {
+  width: 100%;
+}
+
+.pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 7.8pt;
+  /* Make thead repeat on every page in Dompdf */
+  -dompdf-keep-table-together: false;
+}
+
+/* thead repeats on every page */
+.pdf-table thead {
+  display: table-header-group;
+}
+
+.pdf-table thead th {
+  background: #5c54e8;
+  color: #fff;
+  padding: 5px 6px;
+  text-align: left;
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  border-right: 1px solid #7b75f0;
+}
+.pdf-table thead th:last-child { border-right: none; }
+
+/* Prevent rows from being sliced across page boundaries */
+.pdf-table tbody tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.pdf-table tbody tr:nth-child(even) { background: #f5f4ff; }
+.pdf-table tbody tr:nth-child(odd)  { background: #ffffff; }
+
+.pdf-table tbody tr:last-child td { border-bottom: 2px solid #6c63ff; }
+
+.pdf-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid #e4e2f8;
+  border-right: 1px solid #eeecff;
+  vertical-align: middle;
+  word-break: break-word;
+}
+.pdf-table td:last-child { border-right: none; }
+
+/* Column widths */
+.col-num   { width: 4%;  text-align: center; color: #999; font-size: 7pt; }
+.col-uid   { width: 9%;  }
+.col-name  { width: 22%; }
+.col-date  { width: 11%; }
+.col-time  { width: 9%;  }
+.col-hours { width: 10%; }
+.col-status{ width: 14%; }
+
+.uid-cell {
+  font-family: 'DejaVu Sans Mono', monospace;
+  font-size: 7pt;
+  color: #4a44c0;
+  font-weight: 700;
+}
+.name-cell  { font-weight: 500; }
+.date-cell  { white-space: nowrap; color: #444; }
+.time-cell  { font-weight: 700; white-space: nowrap; }
+.hours-cell { font-weight: 600; color: #333; }
+
+.time-ok    { color: #1a7a4a; }
+.time-late  { color: #c0720a; }
+.time-early { color: #b52020; }
+
+/* Status badges */
+.badge-ok {
+  color: #0a5c31;
+  background: #d1f0e0;
+  border: 1px solid #a8dfc0;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 6.5pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-late {
+  color: #7a3e00;
+  background: #fde8c4;
+  border: 1px solid #f0c87a;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 6.5pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-early {
+  color: #7a0000;
+  background: #fdd8d8;
+  border: 1px solid #f0a0a0;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 6.5pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-crit {
+  color: #4a0000;
+  background: #f5c0c0;
+  border: 1px solid #e08080;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 6.5pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Fixed Footer on every page ─────────────────────────── */
+.pdf-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14mm;
+  padding: 5px 6mm;
+  background: #f0effe;
+  border-top: 2px solid #5c54e8;
+  font-size: 7pt;
+  color: #555;
+}
+.pdf-footer strong { color: #5c54e8; }
+
+/* ── Page number (injected by Dompdf canvas) ────────────── */
+.page-num {
+  font-size: 7pt;
+  color: #888;
+}
